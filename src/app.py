@@ -4,25 +4,27 @@ import httpx
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 import fastapi
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 
 import api
 import exceptions
 import models
 import settings
+import utils
 from models import TimeoutParameter
 
 settings.configure_logger()
+
 app = FastAPI()
 FastAPIInstrumentor.instrument_app(app)
 
 
 @app.get("/api/smart", response_model=models.ApiSmartResponse)
-async def api_smart(timeout: int = TimeoutParameter):
+async def api_smart(timeout: int = TimeoutParameter, client: httpx.AsyncClient = Depends(utils.get_async_client)):
     try:
         timeout_in_seconds = timeout/1000
         start = time.perf_counter()
-        response_body = await api.get_data(timeout_in_seconds-settings.TIMEOUT_TOLERANCE)
+        response_body = await api.get_data(timeout_in_seconds-settings.TIMEOUT_TOLERANCE, client)
         end = time.perf_counter()
         return models.ApiSmartResponse(time=int((end-start)*1000), api=response_body)
     except exceptions.UnsuccessfulApiError:
