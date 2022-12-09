@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  server:
+    build: .
+    ports:
+      - "8000:8000"
+    command: uvicorn app:app --host 0.0.0.0 --port 8000
+    environment:
+      - LOG_LEVEL=WARNING
+      - ZIPKIN_ENDPOINT=http://zipkin:9411
+    depends_on:
+      - zipkin
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+  locust:
+    image: locustio/locust
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --html "documents/locust.html" -t 30 --autostart --host "http://server:8000" -u 50 -r 50
+    depends_on:
+      - server
+      - zipkin

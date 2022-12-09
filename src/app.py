@@ -1,5 +1,7 @@
 import time
 
+import httpx
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 import fastapi
 import uvicorn
 from fastapi import FastAPI
@@ -12,16 +14,7 @@ from models import TimeoutParameter
 
 settings.configure_logger()
 app = FastAPI()
-
-
-@app.on_event("startup")
-async def startup():
-    api.client.get_client()
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await api.client.stop()
+FastAPIInstrumentor.instrument_app(app)
 
 
 @app.get("/api/smart", response_model=models.ApiSmartResponse)

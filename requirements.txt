@@ -5,3 +5,9 @@ pytest
 pytest-mock
 pytest-httpx
 pytest-asyncio
+locust
+opentelemetry-distro
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-zipkin-proto-http
+urllib3
+pydantic
