@@ -27,7 +27,6 @@ provider = TracerProvider(resource=resource)
 processor = BatchSpanProcessor(zipkin_exporter)
 provider.add_span_processor(processor)
 trace.set_tracer_provider(provider)
-tracer = trace.get_tracer(__name__)
 
 
 def configure_logger():
