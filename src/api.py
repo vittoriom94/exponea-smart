@@ -7,6 +7,12 @@ import logging
 
 
 async def get_data(available_time: float, client: httpx.AsyncClient) -> dict:
+    """
+    Send one time limited request to the exponea endpoint, then send two more if the first one fails.
+    :param available_time: time available to complete the function, before timeout
+    :param client: httpx.AsyncClient used to send requests to the exponea endpoint
+    :return: response body from exponea endpoint
+    """
     successful_response_body: dict | None
     try:
         response = await client.get(settings.EXPONEA_ENDPOINT, timeout=settings.MAX_FIRST_TIMEOUT_MS/1000)
@@ -25,6 +31,12 @@ async def get_data(available_time: float, client: httpx.AsyncClient) -> dict:
 
 
 async def run_two_api_calls(timeout: int, client: httpx.AsyncClient) -> dict | None:
+    """
+    Send two concurrent requests to the exponea endpoint. Cancel the other if one completes successfully.
+    :param timeout: timeout for the requests
+    :param client: httpx.AsyncClient used to send requests to the exponea endpoint
+    :return: response body from exponea endpoint
+    """
     response_data = None
     tasks = [asyncio.create_task(client.get(settings.EXPONEA_ENDPOINT, timeout=timeout)) for _ in range(settings.RETRIES)]
     for task in asyncio.as_completed(tasks):

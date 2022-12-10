@@ -21,6 +21,12 @@ FastAPIInstrumentor.instrument_app(app)
 
 @app.get("/api/smart", response_model=models.ApiSmartResponse)
 async def api_smart(timeout: int = TimeoutParameter, client: httpx.AsyncClient = Depends(utils.get_async_client)):
+    """
+    Retrieve data from the exponea API endpoint
+    :param timeout: maximum time in milliseconds for this function
+    :param client: httpx.AsyncClient used to send requests to the exponea endpoint
+    :return: execution time of this function, and data from the exponea api endpoint.
+    """
     try:
         timeout_in_seconds = timeout/1000
         start = time.perf_counter()
