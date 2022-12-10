@@ -1,12 +1,9 @@
 import random
 
 from locust import HttpUser, task
-from urllib3 import PoolManager
 
 
 class ExponeaUser(HttpUser):
-    pool_manager = PoolManager(maxsize=10, block=True)
-
     @task
     def api_smart(self):
         timeout = random.randint(500, 1000)
