@@ -1,11 +1,11 @@
 import random
 
-from locust import FastHttpUser, task
+from locust import HttpUser, task
 from urllib3 import PoolManager
 
 
-class ExponeaUser(FastHttpUser):
-    pool_manager = PoolManager(maxsize=20, block=True)
+class ExponeaUser(HttpUser):
+    pool_manager = PoolManager(maxsize=10, block=True)
 
     @task
     def api_smart(self):
