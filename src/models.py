@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 import settings
 
-MIN_TIMEOUT_MS = settings.MAX_FIRST_TIMEOUT_MS + 200
+MIN_TIMEOUT_MS = settings.MAX_FIRST_TIMEOUT_MS + settings.TIMEOUT_TOLERANCE*1000
 
 TimeoutParameter = Query(
     ge=MIN_TIMEOUT_MS,
